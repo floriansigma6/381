@@ -1,5 +1,5 @@
 /*
- * To upodate scketch:
+ * To update scketch:
  * Disconect Trinamic Power supply
  * Plug Arduino USB cable
  * Switch RS485 to OFF with switch on shield
