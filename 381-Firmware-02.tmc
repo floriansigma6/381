@@ -1,0 +1,58 @@
+Func1:	JA init		//run 0 initialisation
+Func2:	JA stepToe	//run 0 initialisation
+Func3:	JA stepHell	//run 0 initialisation
+Func4:	JA step		//run 0 initialisation
+
+speed = 60000			//	Time between possition
+homePosition = -22000	//	Home Position M1 (LEFT SHOE)
+//homePosition = -37000	//	Home Position M2 (RIGHT SHOE)
+toeInFront = -307200	//	Toe in front position
+HellBack = 256000		//	Hell in back position
+fullStep = -1474560	//	One full step of the shoe
+
+
+
+init:
+
+	SAP 6, 0, 180		    //set Maximum current
+	SAP 7, 0, 8    		//set Standby current
+	SAP 4, 0, speed	//set Maximum positioning speed [pps]
+	SAP 5, 0, 80    //set Maximum acceleration [pps/s]
+	SAP 17, 0, 80    //set Max. deceleration [pps/s]
+	SAP 193, 0, 8		//set Reference search mode
+	SAP 194, 0, speed		//set Reference search speed [pps]
+	SAP 195, 0, 15000		//set Switch search speed [pps] must be lower then SAP 194
+
+	RFS START, 0			//Start left reference search
+	WAIT RFS, 0, 0
+	WAIT TICKS, 0, 100		// WAIT 1 tick = 10 ms
+	MVP ABS, 0, homePosition
+	WAIT POS, 0, 0
+	MST 0				// STOP MOTOR
+	SAP 1, 0, 0			//set Actual position	
+	SAP 0, 0, 0    //set Target position [µsteps]
+	STOP
+
+stepToe:
+	MVP ABS, 0, toeInFront
+	WAIT POS, 0, 0
+	MVP ABS, 0, 0
+	WAIT POS, 0, 0
+	STOP
+
+stepHell:
+	MVP ABS, 0, HellBack
+	WAIT POS, 0, 0
+	MVP ABS, 0, 0
+	WAIT POS, 0, 0
+	STOP
+
+step:
+	MVP REL, 0, fullStep
+	WAIT POS, 0, 0
+	WAIT TICKS, 0, 100		// WAIT 1 tick = 10 ms
+	MST 0				//STOP MOTOR
+	SAP 0, 0, 0    		//set Target position [µsteps]
+	SAP 1, 0, 0			//set Actual position
+	WAIT TICKS, 0, 100		// WAIT 1 tick = 10 ms
+	STOP
